@@ -16,10 +16,12 @@ resource "aws_instance" "project04_bastion" {
     }
 }
 
+
+???보안그룹???
 resource "aws_security_group" "project04_ssh_sg" {
     name   = "project04_ssh_sg"
     description = "security group for ssh server"
-    vpc_id = data.terraform_remote_state.project04_vpc.outputs.vpc_id
+    vpc_id = data.terraform_remote_state.aws04_vpc.outputs.vpc_id
 
 
     ingress {
@@ -38,7 +40,7 @@ resource "aws_security_group" "project04_ssh_sg" {
     }
 
     tags = {
-        Name = "project04_ssh_sg"
+        Name = "aws04_ssh_sg"
         Description = "SSH security group"
     }
 }
