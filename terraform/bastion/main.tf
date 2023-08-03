@@ -5,7 +5,7 @@ resource "aws_instance" "project04_bastion" {
     #보안 그룹
     vpc_security_group_ids = [aws_security_group.project04_ssh_sg.id]
     #서브넷 
-    subnet_id = data.terraform_remote_state.project04_vpc.outputs.public_subnet2a
+    subnet_id = data.terraform_remote_state.project04_vpc.outputs.project04_public_subnet2a.id
     #가용 영역
     availability_zone = "ap-northeast-2a"
     #퍼블릭 IP 할당 여부 
@@ -17,15 +17,15 @@ resource "aws_instance" "project04_bastion" {
 }
 
 
-???보안그룹???
+#SSH Security group
 resource "aws_security_group" "project04_ssh_sg" {
-    name   = "project04_ssh_sg"
-    description = "security group for ssh server"
-    vpc_id = data.terraform_remote_state.aws04_vpc.outputs.vpc_id
+    name   = "Project04 SSH Accept"
+    description = "security group for SSH server"
+    vpc_id = data.terraform_remote_state.project04_vpc.outputs.vpc_id
 
 
     ingress {
-        description = "For SSH port"
+        description = "For SSH accept"
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
@@ -40,7 +40,7 @@ resource "aws_security_group" "project04_ssh_sg" {
     }
 
     tags = {
-        Name = "aws04_ssh_sg"
-        Description = "SSH security group"
+        Name = "Project04 SSH Accept"
+        Description = "security group for SSH server"
     }
 }
