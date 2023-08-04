@@ -7,7 +7,6 @@ resource "aws_vpc" "project04_vpc" {
 	tags = {
 		Name = "project04-vpc"
 	}
-
 }
 
 #0620화
