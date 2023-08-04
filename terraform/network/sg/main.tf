@@ -1,7 +1,7 @@
 #SSH Security group
 resource "aws_security_group" "project04_ssh_sg" {
-    name   = "project04_ssh_sg"
-    description = "security group for ssh server"
+    name   = "Project04 SSH Accept"
+    description = "security group for SSH server"
     vpc_id = data.terraform_remote_state.project04_vpc.outputs.vpc_id
 
 
@@ -21,8 +21,8 @@ resource "aws_security_group" "project04_ssh_sg" {
     }
 
     tags = {
-        Name = "project04_ssh_sg"
-        Description = "security group for SSH accept"
+        Name = "Project04 SSH Accept"
+        Description = "security group for SSH server"
     }
 }
 
@@ -30,7 +30,7 @@ resource "aws_security_group" "project04_ssh_sg" {
 #WEB Security group - HTTP 8080
 resource "aws_security_group" "project04_web_sg" {
     name        = "Project04 WEB Accept"
-    description = "security group for WEB accept"
+    description = "security group for WEB server"
     vpc_id      = data.terraform_remote_state.project04_vpc.outputs.vpc_id
 
 
@@ -51,7 +51,7 @@ resource "aws_security_group" "project04_web_sg" {
 
     tags = {
         Name = "Project04 WEB Accept"
-        Description = "security group for WEB accept"
+        Description = "security group for WEB server"
     }
 }
 
@@ -59,7 +59,7 @@ resource "aws_security_group" "project04_web_sg" {
 #WEB Security group - HTTP 80, 443
 resource "aws_security_group" "project04_alb_sg" {
     name        = "Project04 ALB Accept"
-    description = "security group for ALB accept"
+    description = "security group for ALB server"
     vpc_id      = data.terraform_remote_state.project04_vpc.outputs.vpc_id
 
 
@@ -88,8 +88,7 @@ resource "aws_security_group" "project04_alb_sg" {
 
     tags = {
         Name = "Project04 ALB Accept"
-        Description = "security group for ALB accept"
+        Description = "security group for ALB server"
     }
 }
-
 

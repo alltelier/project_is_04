@@ -1,11 +1,11 @@
 resource "aws_instance" "project04_bastion" {
-    ami = data.aws_ami.ubuntu.image_id
-    instance_type = "t2.micro"
+    ami = data.aws_ami.ubuntu.image_id 
+    instance_type = "t2.micro" 
     key_name = "project04-key"
     #보안 그룹
     vpc_security_group_ids = [aws_security_group.project04_ssh_sg.id]
     #서브넷 
-    subnet_id = data.terraform_remote_state.project04_vpc.outputs.project04_public_subnet2a.id
+    subnet_id = "subnet-07520d03716ae0e01"
     #가용 영역
     availability_zone = "ap-northeast-2a"
     #퍼블릭 IP 할당 여부 
@@ -21,11 +21,11 @@ resource "aws_instance" "project04_bastion" {
 resource "aws_security_group" "project04_ssh_sg" {
     name   = "Project04 SSH Accept"
     description = "security group for SSH server"
-    vpc_id = data.terraform_remote_state.project04_vpc.outputs.vpc_id
+    vpc_id = "vpc-0ef5fd852b154d136"
 
 
     ingress {
-        description = "For SSH accept"
+        description = "For SSH port"
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
