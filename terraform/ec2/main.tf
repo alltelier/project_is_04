@@ -75,7 +75,7 @@ resource "aws_autoscaling_group" "project04-target-group" {
 
   name             = "project04-target-group"
   desired_capacity = 0
-  min_size         = 3
+  min_size         = 0
   max_size         = 3
 
   target_group_arns = [data.aws_lb_target_group.asg.arn]
