@@ -59,13 +59,35 @@ resource "aws_instance" "project04-target" {
 #시작템플릿 
 resource "aws_launch_template" "project04-target-image" {
 	name			= "project04-launch-template"
-	image_id        = "ami-058ee296e933b9e6a"
+	image_id        = "ami-07f8ff23bb80925d1"
+    # 
   	instance_type   = "t2.micro"
- 	vpc_security_group_ids 	= [aws_security_group.project04_ssh_sg.id,aws_security_group.project04_alb_sg.id]
+ 	vpc_security_group_ids 	= [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
 	key_name 				= "project04-key"
   
 	lifecycle {
     create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "project04-target-group" {
+ # availability_zones = ["ap-northeast-2a", "ap-northeast-2c"]
+  vpc_zone_identifier = ["subnet-07520d03716ae0e01", "subnet-0b6b4369668ab5265"]
+
+  name             = "project04-target-group"
+  desired_capacity = 3
+  min_size         = 3
+  max_size         = 3
+
+  launch_template {
+    id      = aws_launch_template.project04-target-image.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "project04-target-group"
+    propagate_at_launch = true
   }
 }
 
@@ -164,3 +186,14 @@ resource "aws_security_group" "project04_alb_sg" {
     }
 }
 
+variable "vpc_id" {
+	default = "<vpc-id>"
+}
+
+variable "subnet_public_1" {
+	default = "<subnet-id>"
+}
+
+variable "subnet_public_2" {
+	default = "<subnet-id>"
+}
