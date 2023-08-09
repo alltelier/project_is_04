@@ -5,10 +5,10 @@ provider "aws" {
 
 #로드밸런서 생성 
 resource "aws_lb" "project04-lb" {
-	name				= "project04-lb"
+	name			= "project04-lb"
 	load_balancer_type	= "application"
 #로드밸런스 생성되는 vpc의 서브넷 
-	subnets				= ["subnet-07520d03716ae0e01","subnet-0b6b4369668ab5265"]
+	subnets			= ["subnet-07520d03716ae0e01","subnet-0b6b4369668ab5265"]
 #로드밸런스에 사용할 보안 그룹들 
 	security_groups		= [data.aws_security_group.project04_web_sg.id,data.aws_security_group.project04_alb_sg.id]
 } 
