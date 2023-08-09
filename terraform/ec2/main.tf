@@ -60,7 +60,6 @@ resource "aws_instance" "project04-target" {
 resource "aws_launch_template" "project04-target-image" {
 	name			= "project04-launch-template"
 	image_id        = "ami-07f8ff23bb80925d1"
-    # 
   	instance_type   = "t2.micro"
  	vpc_security_group_ids 	= [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
 	key_name 				= "project04-key"
@@ -75,9 +74,12 @@ resource "aws_autoscaling_group" "project04-target-group" {
   vpc_zone_identifier = ["subnet-07520d03716ae0e01", "subnet-0b6b4369668ab5265"]
 
   name             = "project04-target-group"
-  desired_capacity = 3
+  desired_capacity = 0
   min_size         = 3
   max_size         = 3
+
+  target_group_arns = [data.aws_lb_target_group.asg.arn]
+  health_check_type = "ELB"
 
   launch_template {
     id      = aws_launch_template.project04-target-image.id
@@ -90,6 +92,11 @@ resource "aws_autoscaling_group" "project04-target-group" {
     propagate_at_launch = true
   }
 }
+
+data "aws_lb_target_group" "asg" {
+    arn = "arn:aws:elasticloadbalancing:ap-northeast-2:257307634175:targetgroup/project04-target-group/c1463e0f0ca120e3"
+}
+
 
 #SSH Security group
 resource "aws_security_group" "project04_ssh_sg" {
@@ -119,8 +126,6 @@ resource "aws_security_group" "project04_ssh_sg" {
     }
 }
 
-
-
 #WEB Security group - HTTP 8080
 resource "aws_security_group" "project04_web_sg" {
     name        = "Project04 WEB Accept"
@@ -147,8 +152,6 @@ resource "aws_security_group" "project04_web_sg" {
         Description = "security group for WEB server"
     }
 }
-
-
 
 #WEB Security group - HTTP 80, 443
 resource "aws_security_group" "project04_alb_sg" {
