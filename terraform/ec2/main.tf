@@ -1,5 +1,5 @@
 #bastion ec2
-resource "aws_instance" "project04_bastion" {
+resource "aws_instance" "project04-bastion" {
     ami = data.aws_ami.ubuntu.image_id 
     instance_type = "t2.micro" 
     key_name = "project04-key"
@@ -44,59 +44,21 @@ resource "aws_instance" "project04-target" {
     #보안 그룹
     vpc_security_group_ids = [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
     #서브넷 
-    subnet_id = "subnet-05e643d7722c35b2f"
+    subnet_id = "subnet-05e643d7722c35b2f" 
     #가용 영역
     availability_zone = "ap-northeast-2c"
     #퍼블릭 IP 할당 여부 
     associate_public_ip_address = false 
-
+    iam_instance_profile = data.aws_iam_role.code-deploy-role.name
+      
     tags = {
         Name = "project04-target"
     }
 }
 
-
-#시작템플릿 
-resource "aws_launch_template" "project04-target-image" {
-	name			= "project04-launch-template"
-	image_id        = "ami-07f8ff23bb80925d1"
-  	instance_type   = "t2.micro"
- 	vpc_security_group_ids 	= [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
-	key_name 				= "project04-key"
-  
-	lifecycle {
-    create_before_destroy = true
-  }
+data "aws_iam_role" "code-deploy-role" {
+  name = "project04-code-deploy-ec2-role"
 }
-
-resource "aws_autoscaling_group" "project04-target-group" {
- # availability_zones = ["ap-northeast-2a", "ap-northeast-2c"]
-  vpc_zone_identifier = ["subnet-07520d03716ae0e01", "subnet-0b6b4369668ab5265"]
-
-  name             = "project04-target-group"
-  desired_capacity = 0
-  min_size         = 0
-  max_size         = 3
-
-  target_group_arns = [data.aws_lb_target_group.asg.arn]
-  health_check_type = "ELB"
-
-  launch_template {
-    id      = aws_launch_template.project04-target-image.id
-    version = "$Latest"
-  }
-
-  tag {
-    key                 = "Name"
-    value               = "project04-target-group"
-    propagate_at_launch = true
-  }
-}
-
-data "aws_lb_target_group" "asg" {
-    arn = "arn:aws:elasticloadbalancing:ap-northeast-2:257307634175:targetgroup/project04-target-group/c1463e0f0ca120e3"
-}
-
 
 #SSH Security group
 resource "aws_security_group" "project04_ssh_sg" {
@@ -200,3 +162,55 @@ variable "subnet_public_1" {
 variable "subnet_public_2" {
 	default = "<subnet-id>"
 }
+
+
+
+#시작템플릿 
+resource "aws_launch_template" "project04-target-image" {
+	name			= "project04-launch-template"
+	image_id        = "ami-0b8be850fb836e450"
+  	instance_type   = "t2.micro"
+ 	vpc_security_group_ids 	= [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
+	key_name 				= "project04-key"
+
+    iam_instance_profile {
+        name = "project04-code-deploy-ec2-role"
+    } 
+  
+    tags = {
+      Name = "project04-code-deploy-instance"
+    }
+	
+    lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "project04-target-group" {
+ # availability_zones = ["ap-northeast-2a", "ap-northeast-2c"]
+  vpc_zone_identifier = ["subnet-07520d03716ae0e01", "subnet-0b6b4369668ab5265"]
+
+  name             = "project04-target-group"
+  desired_capacity = 3
+  min_size         = 3
+  max_size         = 3
+
+  target_group_arns = [data.aws_lb_target_group.asg.arn]
+  health_check_type = "ELB"
+
+  launch_template {
+    id      = aws_launch_template.project04-target-image.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "project04-target-group"
+    propagate_at_launch = true
+  }
+}
+
+data "aws_lb_target_group" "asg" {
+    arn = "arn:aws:elasticloadbalancing:ap-northeast-2:257307634175:targetgroup/project04-target-group/c1463e0f0ca120e3"
+}
+
