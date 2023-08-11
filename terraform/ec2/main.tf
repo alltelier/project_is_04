@@ -42,7 +42,7 @@ resource "aws_instance" "project04-target" {
     instance_type = "t2.micro"
     key_name = "project04-key"
     #보안 그룹
-    vpc_security_group_ids = [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
+    vpc_security_group_ids = [aws_security_group.project04_ssh_sg.id,aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
     #서브넷 
     subnet_id = "subnet-05e643d7722c35b2f" 
     #가용 영역
@@ -57,7 +57,7 @@ resource "aws_instance" "project04-target" {
 }
 
 data "aws_iam_role" "code-deploy-role" {
-  name = "project04-code-deploy-ec2-role"
+  name = "project04-code-deploy-service-role"
 }
 
 #SSH Security group
@@ -168,9 +168,9 @@ variable "subnet_public_2" {
 #시작템플릿 
 resource "aws_launch_template" "project04-target-image" {
 	name			= "project04-launch-template"
-	image_id        = "ami-0b8be850fb836e450"
+	image_id        = "ami-0bf94d089ba3fa97c"
   	instance_type   = "t2.micro"
- 	vpc_security_group_ids 	= [aws_security_group.project04_web_sg.id,aws_security_group.project04_alb_sg.id]
+ 	vpc_security_group_ids 	= [aws_security_group.project04_ssh_sg.id,aws_security_group.project04_alb_sg.id]
 	key_name 				= "project04-key"
 
     iam_instance_profile {
@@ -192,7 +192,7 @@ resource "aws_autoscaling_group" "project04-target-group" {
 
   name             = "project04-target-group"
   desired_capacity = 3
-  min_size         = 3
+  min_size         = 0
   max_size         = 3
 
   target_group_arns = [data.aws_lb_target_group.asg.arn]

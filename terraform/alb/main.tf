@@ -46,14 +46,14 @@ resource "aws_lb_listener_rule" "HTTP80" {
 
 
 #ALB 리스너 HTTP:8080
-resource "aws_lb_listener" "http8080" {
+resource "aws_lb_listener" "asg-jenkins" {
   load_balancer_arn = aws_lb.project04-lb.arn
   port				= 8080
   protocol			= "HTTP"
 
   default_action {
     type            = "forward"
-    target_group_arn= aws_lb_target_group.asg.arn
+    target_group_arn= aws_lb_target_group.asg-jenkins.arn
   } 
 
 }
@@ -70,37 +70,7 @@ resource "aws_lb_listener_rule" "HTTP8080" {
 
 	action {
 		type				= "forward"
-		target_group_arn	= aws_lb_target_group.asg.arn
-		}
-}
-
-
-#ALB 리스너 
-resource "aws_lb_listener" "https" {
-  load_balancer_arn	= aws_lb.project04-lb.arn
-  port				= 443
-  protocol			= "HTTPS"
-
-  default_action {
-    type			= "forward"
-    target_group_arn= aws_lb_target_group.asg.arn
-  } 
-
-}
-#로드밸런서 리스너 룰 구성
-resource "aws_lb_listener_rule" "HTTPS443" {
-	listener_arn	= aws_lb_listener.http.arn
-	priority		= 100
-
-	condition {
-		path_pattern {
-			values = ["*"]
-		}
-	}
-
-	action {
-		type				= "forward"
-		target_group_arn	= aws_lb_target_group.asg.arn
+		target_group_arn	= aws_lb_target_group.asg-jenkins.arn
 		}
 }
 
@@ -125,6 +95,23 @@ resource "aws_lb_target_group" "asg" {
 }
 
 
+resource "aws_lb_target_group" "asg-jenkins" {
+  name        = "project04-target-group-jenkins"
+  port        = var.server_port
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.project04-vpc.id
+
+	health_check {
+		path		        = "/"
+		protocol	        = "HTTP"
+		matcher		        = "200"
+		interval 	        = 15
+		timeout		        = 3
+		healthy_threshold	= 2
+		unhealthy_threshold	= 2
+	}	
+}
+
 
 #정보 가져 오기
 data "aws_vpc" "project04-vpc"  {
@@ -136,12 +123,15 @@ data "aws_subnets" "project04-vpc" {
     values = [data.aws_vpc.project04-vpc.id]
   }
 }
+
 data "aws_security_group" "project04_alb_sg" {
     id = "sg-0151c526c8195891f"
 }
+
 data "aws_security_group" "project04_web_sg" {
     id = "sg-04a9d5c5086565b93"
 }
+
 data "template_file" "web_output" {
 	template = file("${path.module}/web.sh")
 	vars = {
