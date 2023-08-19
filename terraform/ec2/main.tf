@@ -49,23 +49,30 @@ resource "aws_instance" "project04-target" {
     availability_zone = "ap-northeast-2c"
     #퍼블릭 IP 할당 여부 
     associate_public_ip_address = false 
-    iam_instance_profile = data.aws_iam_role.code-deploy-role.name
+    iam_instance_profile = aws_iam_instance_profile.code-deploy.name
       
     tags = {
         Name = "project04-target"
     }
 }
 
-data "aws_iam_role" "code-deploy-role" {
-  name = "project04-code-deploy-service-role"
+#target-ec2에 적용할 iam_instance_profile 생성 
+resource "aws_iam_instance_profile" "code-deploy" {
+  name = "project04-code-deploy-ec2-role" 
+  role = data.aws_iam_role.code-deploy.name
 }
+#iam_instance_profile 생성을 위한 iam_role 불러오기 
+data "aws_iam_role" "code-deploy" {
+    name = "project04-code-deploy-ec2-role"
+    #arn = "arn:aws:iam::257307634175:role/project04-code-deploy-ec2-role"
+}
+
 
 #SSH Security group
 resource "aws_security_group" "project04_ssh_sg" {
     name   = "Project04 SSH Accept"
     description = "security group for SSH server"
     vpc_id = "vpc-0ef5fd852b154d136"
-
 
     ingress {
         description = "For SSH port"
@@ -121,7 +128,6 @@ resource "aws_security_group" "project04_alb_sg" {
     description = "security group for ALB server"
     vpc_id      = "vpc-0ef5fd852b154d136"
 
-
     ingress {
         description = "For WEB port"
         protocol    = "tcp"
@@ -163,14 +169,12 @@ variable "subnet_public_2" {
 	default = "<subnet-id>"
 }
 
-
-
 #시작템플릿 
 resource "aws_launch_template" "project04-target-image" {
 	name			= "project04-launch-template"
-	image_id        = "ami-0bf94d089ba3fa97c"
-  	instance_type   = "t2.micro"
- 	vpc_security_group_ids 	= [aws_security_group.project04_ssh_sg.id,aws_security_group.project04_alb_sg.id]
+	image_id        = "ami-0ed6c821be77fa520"
+  instance_type   = "t2.micro"
+ 	vpc_security_group_ids 	= ["sg-00f8fc4f9e7e95784","sg-0151c526c8195891f"]
 	key_name 				= "project04-key"
 
     iam_instance_profile {
@@ -192,7 +196,7 @@ resource "aws_autoscaling_group" "project04-target-group" {
 
   name             = "project04-target-group"
   desired_capacity = 3
-  min_size         = 0
+  min_size         = 3
   max_size         = 3
 
   target_group_arns = [data.aws_lb_target_group.asg.arn]

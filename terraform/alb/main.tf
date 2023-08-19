@@ -28,21 +28,21 @@ resource "aws_lb_listener" "http" {
 
 }
 #로드밸런서 리스너 룰 구성
-resource "aws_lb_listener_rule" "HTTP80" {
-	listener_arn	= aws_lb_listener.http.arn
-	priority		= 100
-
-	condition {
-		path_pattern {
-			values	= ["*"]
-		}
-	}
-
-	action {
-		type				= "forward"
-		target_group_arn	= aws_lb_target_group.asg.arn
-		}
-}
+#resource "aws_lb_listener_rule" "HTTP80" {
+#	listener_arn	= aws_lb_listener.http.arn
+#	priority		= 100
+#
+#	condition {
+#		path_pattern {
+#			values	= ["*"]
+#		}
+# }
+#
+#	action {
+#		type				= "forward"
+#		target_group_arn	= aws_lb_target_group.asg.arn
+#		}
+#}
 
 
 #ALB 리스너 HTTP:8080
@@ -58,21 +58,21 @@ resource "aws_lb_listener" "asg-jenkins" {
 
 }
 #로드밸런서 리스너 룰 구성
-resource "aws_lb_listener_rule" "HTTP8080" {
-	listener_arn	= aws_lb_listener.http.arn
-	priority		= 100
+#resource "aws_lb_listener_rule" "HTTP8080" {
+#	listener_arn	= aws_lb_listener.http.arn
+#	priority		= 100
+#
+#	condition {
+#		path_pattern {
+#			values	= ["*"]
+#		}
+#	}
 
-	condition {
-		path_pattern {
-			values	= ["*"]
-		}
-	}
-
-	action {
-		type				= "forward"
-		target_group_arn	= aws_lb_target_group.asg-jenkins.arn
-		}
-}
+#	action {
+#		type				= "forward"
+#		target_group_arn	= aws_lb_target_group.asg-jenkins.arn
+#		}
+#}
 
 
 
