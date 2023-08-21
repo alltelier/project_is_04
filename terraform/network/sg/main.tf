@@ -1,9 +1,8 @@
 #SSH Security group
 resource "aws_security_group" "project04_ssh_sg" {
-    name   = "Project04 SSH Accept"
+    name   = "project04_ssh"
     description = "security group for SSH server"
     vpc_id = data.terraform_remote_state.project04_vpc.outputs.vpc_id
-
 
     ingress {
         description = "For SSH port"
@@ -29,7 +28,7 @@ resource "aws_security_group" "project04_ssh_sg" {
 
 #WEB Security group - HTTP 8080
 resource "aws_security_group" "project04_web_sg" {
-    name        = "Project04 WEB Accept"
+    name        = "project04_web"
     description = "security group for WEB server"
     vpc_id      = data.terraform_remote_state.project04_vpc.outputs.vpc_id
 
@@ -58,7 +57,7 @@ resource "aws_security_group" "project04_web_sg" {
 
 #WEB Security group - HTTP 80, 443
 resource "aws_security_group" "project04_alb_sg" {
-    name        = "Project04 ALB Accept"
+    name        = "project04_alb"
     description = "security group for ALB server"
     vpc_id      = data.terraform_remote_state.project04_vpc.outputs.vpc_id
 
