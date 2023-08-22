@@ -16,13 +16,12 @@ resource "aws_instance" "project04-target" {
 
 #target-ec2에 적용할 iam_instance_profile 생성 
 resource "aws_iam_instance_profile" "ec2-role" {
-  name = "project04-code-deploy-ec2-role" 
+  name = "project04-ec2-role" 
   role = data.aws_iam_role.code-deploy.name
 }
 #iam_instance_profile 생성을 위한 iam_role 불러오기 
 data "aws_iam_role" "code-deploy" {
     name = "project04-code-deploy-ec2-role"
-    #arn = "arn:aws:iam::257307634175:role/project04-code-deploy-ec2-role"
 }
 
 
