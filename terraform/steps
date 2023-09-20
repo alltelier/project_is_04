@@ -1,0 +1,50 @@
+1. 기본 구성 
+☆ Terraform 사용 
+1) VPC 
+- 서브넷 
+- 인터넷 게이트웨이 
+- NAT 게이트웨이 
+- 라우팅 테이블 
+
+2) 보안 그룹 
+- SSH 
+- HTTP 
+- HTTPS 
+
+3) EC2 
+- bastion 
+- jenkins
+- target 
+
+
+2. 각 EC2 구성 
+☆ MobaXterm 사용 
+- bastion 
+- jenkins
+- target 
+
+3. ALB 
+☆ Terraform 사용
+- DNS 연결 
+- 젠킨스, spring-petclinic 연결 
+
+
+4. 시작템플릿, Auto Scaling 
+☆ Terraform 사용
+- 원본 target 인스턴스 구성 후 AMI 로 만들어서 사용 (구성방법 메모장 참고)
+
+
+5. GitHub 연동하여 Jenkins 작업 
+☆ ALB dns주소:8080 접속하여 Jenkins 웹 사용 
+☆ GitHub Commit 사용 
+- Jenkinsfile 에 코드 명령하여 Commit 하면 Jenkins에서 자동실행 
+- 메모 참고하여 차례대로 실행 
+
+6. CodeDeploy 실행 
+
+
+7. 접속 확인 
+
+
+
+
