@@ -44,5 +44,5 @@ resource "aws_autoscaling_group" "project04-target-group" {
 }
 
 data "aws_lb_target_group" "asg" {
-    arn = "-------"
+    arn = "arn:aws:elasticloadbalancing:ap-northeast-2:257307634175:targetgroup/project04-target-group/8ae437d38848e993"
 }

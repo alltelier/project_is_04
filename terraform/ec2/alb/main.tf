@@ -42,7 +42,7 @@ resource "aws_lb_listener" "HTTPS" {
   load_balancer_arn = aws_lb.project04-lb.arn
   port				= 443
   protocol			= "HTTPS"
-
+  certificate_arn = "arn:aws:acm:ap-northeast-2:257307634175:certificate/8238361a-128b-464c-81fe-c4108d9e5ab2"
   default_action {
     type            = "forward"
     target_group_arn= aws_lb_target_group.asg-jenkins.arn
