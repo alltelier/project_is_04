@@ -37,3 +37,4 @@ variable "subnet_public_2" {
 	default = "<subnet-id>"
 }
 
+
