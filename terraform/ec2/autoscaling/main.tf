@@ -46,4 +46,3 @@ resource "aws_autoscaling_group" "project04-target-group" {
 data "aws_lb_target_group" "asg" {
     arn = "-------"
 }
-

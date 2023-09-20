@@ -12,4 +12,3 @@ resource "aws_instance" "project04-bastion" {
         Name = "project04-bastion"
     }
 }
-

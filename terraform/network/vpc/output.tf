@@ -14,4 +14,3 @@ output "private_subnet2a" {
 output "private_subnet2c" {
     value = aws_subnet.project04_private_subnet2c.id
 }
-

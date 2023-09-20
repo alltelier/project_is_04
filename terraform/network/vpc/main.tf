@@ -9,7 +9,6 @@ resource "aws_vpc" "project04_vpc" {
 	}
 }
 
-#0620화
 #-------------------서브넷 만들기---------------------------
 #퍼블릭 서브넷2a
 resource "aws_subnet" "project04_public_subnet2a" {
@@ -56,8 +55,6 @@ resource "aws_subnet" "project04_private_subnet2c" {
 	}
 }
 
-
-#0621수
 #-------------IGW Internet Gateway-----------------
 #사설 IP를 공인 IP로 바꿔서 인터넷 세상에 연결해줌. 
 resource "aws_internet_gateway" "project04_igw" {
@@ -166,4 +163,3 @@ resource "aws_route" "project04_private_rt_table2" {
 	destination_cidr_block = "0.0.0.0/0"
 	nat_gateway_id = aws_nat_gateway.project04_nat.id 
 }
-
